@@ -12,58 +12,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ Slider)
 /* harmony export */ });
-// export default class Slider {
-//   constructor(page, btns) {
-//     this.page = document.querySelector(page);
-//     this.slides = this.page.children;
-//     this.btns = document.querySelectorAll(btns);
-//     this.slideIndex = 1;
-//   }
-
-//   showSlides(n) {
-//     /**опріділяємо крайні точки */
-//     if (n > this.slides.length) {
-//       this.slideIndex = 1;
-//     }
-//     if (n < 1) {
-//       this.slideIndex = this.slides.length;
-//     }
-
-//     /**
-//      * hide all slides
-//      * */
-//     this.slides.forEach((slide) => {
-//       slide.style.display = "none";
-//     });
-
-//     /**
-//      * show active slide
-//      * */
-//     this.slides[this.slideIndex - 1].style.display = "block";
-//   }
-
-//   plusSlides(n) {
-//     this.showSlides((this.slideIndex += n));
-//   }
-
-//   render() {
-//     this.btns.forEach((btn) => {
-//       btn.addEventListener("click", () => {
-//         this.plusSlides(1);
-//       });
-//     });
-
-//     this.showSlides(this.slideIndex);
-//   }
-// }
-
 class Slider {
   constructor(page, btns) {
     this.page = document.querySelector(page);
-    this.slides = this.page.children;
+    this.slides = Array.from(this.page.children);
     this.btns = document.querySelectorAll(btns);
     this.slideIndex = 1;
   }
+  // <{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>
   showSlides(n) {
     if (n > this.slides.length) {
       this.slideIndex = 1;
@@ -76,20 +32,18 @@ class Slider {
     });
     this.slides[this.slideIndex - 1].style.display = "block";
   }
+  // <{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>
   plusSlides(n) {
     this.showSlides(this.slideIndex += n);
   }
+  // <{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>
   render() {
-    this.btns.forEach(item => {
-      item.addEventListener("click", () => {
+    this.btns.forEach(btn => {
+      btn.addEventListener("click", () => {
         this.plusSlides(1);
       });
-      item.parentNode.previousElementSibling.addEventListener("click", e => {
-        e.preventDefault();
-        this.slideIndex = 1;
-        this.showSlides(this.slideIndex);
-      });
     });
+    // <{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>
     this.showSlides(this.slideIndex);
   }
 }
