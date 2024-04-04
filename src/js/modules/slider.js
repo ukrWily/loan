@@ -30,6 +30,12 @@ export default class Slider {
       btn.addEventListener("click", () => {
         this.plusSlides(1);
       });
+      /** when click logo -> open first page */
+      item.parentNode.previousElementSibling.addEventListener("click", (e) => {
+        e.preventDefault();
+        this.slideIndex = 1;
+        this.showSlides(this.slideIndex);
+      });
     });
     // <{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>
     this.showSlides(this.slideIndex);
