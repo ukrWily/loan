@@ -5,7 +5,23 @@ export default class VideoPlayer {
     this.close = this.overlay.querySelector(".close");
   }
 
-  play() {
+  createPlayer(url) {
+    this.player = new YT.Player("player", {
+      height: "100%",
+      width: "100%",
+      videoId: `${url}`,
+    });
+
+    console.log(this.player);
+  }
+
+  init() {
+    const tag = document.createElement("script");
+
+    tag.src = "https://www.youtube.com/iframe_api";
+    const firstScriptTag = document.getElementsByTagName("script")[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
     this.btns.forEach((btn) => {
       btn.addEventListener("click", () => {
         console.log("work");
