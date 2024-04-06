@@ -21,8 +21,15 @@ class VideoPlayer {
   bindTriggers() {
     this.btns.forEach(btn => {
       btn.addEventListener("click", () => {
-        const path = btn.getAttribute("data-url");
-        this.createPlayer(path);
+        /**
+         * if already created- just show, else- create
+         */
+        if (document.querySelector("ifarme#frame")) {
+          this.overlay.style.display = "flex";
+        } else {
+          const path = btn.getAttribute("data-url");
+          this.createPlayer(path);
+        }
       });
     });
   }
@@ -30,6 +37,7 @@ class VideoPlayer {
     this.close.addEventListener("click", () => {
       this.overlay.style.display = "none";
       this.player.stopVideo();
+      // this.player.destroy();
     });
   }
   createPlayer(url) {
