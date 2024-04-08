@@ -28,7 +28,7 @@ export default class MainSlider extends Slider {
       }
     } catch (error) {}
 
-    this.slides.forEach((slide) => {
+    Array.from(this.slides).forEach((slide) => {
       slide.style.display = "none";
     });
 
