@@ -14,7 +14,10 @@ export default class SliderMini extends Slider {
         slide.querySelector(".card__controls-arrow").style.opacity = "0";
       }
     });
-
+    /**
+     * Оскільки кнопки в одному блоці зі слайдами,
+     * відфільтровуємо їх
+     */
     if (!this.slides[0].closest("button")) {
       this.slides[0].classList.add(this.activeClass);
     }
@@ -27,29 +30,37 @@ export default class SliderMini extends Slider {
     }
   }
 
-  bindTriggers() {
-    this.next.addEventListener("click", () => {
-      if (
-        this.slides[1].tagName == "BUTTON" &&
-        this.slides[2].tagName == "BUTTON"
-      ) {
-        for (let i = 3; i > 0; i--) {
-          this.container.appendChild(this.slides[0]); //slide
-          this.decorizeSlides();
-        }
-        // this.container.appendChild(this.slides[0]); //slide
-        // this.container.appendChild(this.slides[1]); //button-1
-        // this.container.appendChild(this.slides[2]); //button-2
-        // this.decorizeSlides();
-      } else if (this.slides[1].tagName == "BUTTON") {
+  nextSlide() {
+    // <{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>
+    /**
+     * Оскільки кнопки в одному блоці зі слайдами,
+     * відфільтровуємо їх
+     */
+    if (
+      this.slides[1].tagName == "BUTTON" &&
+      this.slides[2].tagName == "BUTTON"
+    ) {
+      for (let i = 3; i > 0; i--) {
         this.container.appendChild(this.slides[0]); //slide
-        this.container.appendChild(this.slides[1]); //button-1
-        this.decorizeSlides();
-      } else {
-        this.container.appendChild(this.slides[0]);
         this.decorizeSlides();
       }
-    });
+      // this.container.appendChild(this.slides[0]); //slide
+      // this.container.appendChild(this.slides[1]); //button-1
+      // this.container.appendChild(this.slides[2]); //button-2
+      // this.decorizeSlides();
+    } else if (this.slides[1].tagName == "BUTTON") {
+      this.container.appendChild(this.slides[0]); //slide
+      this.container.appendChild(this.slides[1]); //button-1
+      this.decorizeSlides();
+    } else {
+      // <{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>
+      this.container.appendChild(this.slides[0]);
+      this.decorizeSlides();
+    }
+  }
+
+  bindTriggers() {
+    this.next.addEventListener("click", () => this.nextSlide());
 
     this.prev.addEventListener("click", () => {
       for (let i = this.slides.length - 1; i > 0; i--) {
@@ -64,6 +75,8 @@ export default class SliderMini extends Slider {
   }
 
   init() {
+    let pause = false;
+
     this.container.style.cssText = `
     display: flex;
     flex-wrap: wrap;
@@ -73,5 +86,15 @@ export default class SliderMini extends Slider {
 
     this.bindTriggers();
     this.decorizeSlides();
+
+    if (this.autoplay) {
+      setInterval(() => {
+        this.container.onmouseover = () => (pause = true);
+        this.container.onmouseout = () => (pause = false);
+        if (!pause) {
+          this.nextSlide();
+        }
+      }, 5000);
+    }
   }
 }

@@ -155,6 +155,10 @@ class SliderMini extends _slider__WEBPACK_IMPORTED_MODULE_0__["default"] {
         slide.querySelector(".card__controls-arrow").style.opacity = "0";
       }
     });
+    /**
+     * Оскільки кнопки в одному блоці зі слайдами,
+     * відфільтровуємо їх
+     */
     if (!this.slides[0].closest("button")) {
       this.slides[0].classList.add(this.activeClass);
     }
@@ -164,26 +168,33 @@ class SliderMini extends _slider__WEBPACK_IMPORTED_MODULE_0__["default"] {
       this.slides[0].querySelector(".card__controls-arrow").style.opacity = "1";
     }
   }
-  bindTriggers() {
-    this.next.addEventListener("click", () => {
-      if (this.slides[1].tagName == "BUTTON" && this.slides[2].tagName == "BUTTON") {
-        for (let i = 3; i > 0; i--) {
-          this.container.appendChild(this.slides[0]); //slide
-          this.decorizeSlides();
-        }
-        // this.container.appendChild(this.slides[0]); //slide
-        // this.container.appendChild(this.slides[1]); //button-1
-        // this.container.appendChild(this.slides[2]); //button-2
-        // this.decorizeSlides();
-      } else if (this.slides[1].tagName == "BUTTON") {
+  nextSlide() {
+    // <{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>
+    /**
+     * Оскільки кнопки в одному блоці зі слайдами,
+     * відфільтровуємо їх
+     */
+    if (this.slides[1].tagName == "BUTTON" && this.slides[2].tagName == "BUTTON") {
+      for (let i = 3; i > 0; i--) {
         this.container.appendChild(this.slides[0]); //slide
-        this.container.appendChild(this.slides[1]); //button-1
-        this.decorizeSlides();
-      } else {
-        this.container.appendChild(this.slides[0]);
         this.decorizeSlides();
       }
-    });
+      // this.container.appendChild(this.slides[0]); //slide
+      // this.container.appendChild(this.slides[1]); //button-1
+      // this.container.appendChild(this.slides[2]); //button-2
+      // this.decorizeSlides();
+    } else if (this.slides[1].tagName == "BUTTON") {
+      this.container.appendChild(this.slides[0]); //slide
+      this.container.appendChild(this.slides[1]); //button-1
+      this.decorizeSlides();
+    } else {
+      // <{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>
+      this.container.appendChild(this.slides[0]);
+      this.decorizeSlides();
+    }
+  }
+  bindTriggers() {
+    this.next.addEventListener("click", () => this.nextSlide());
     this.prev.addEventListener("click", () => {
       for (let i = this.slides.length - 1; i > 0; i--) {
         if (this.slides[i].tagName !== "BUTTON") {
@@ -196,6 +207,7 @@ class SliderMini extends _slider__WEBPACK_IMPORTED_MODULE_0__["default"] {
     });
   }
   init() {
+    let pause = false;
     this.container.style.cssText = `
     display: flex;
     flex-wrap: wrap;
@@ -204,6 +216,15 @@ class SliderMini extends _slider__WEBPACK_IMPORTED_MODULE_0__["default"] {
     `;
     this.bindTriggers();
     this.decorizeSlides();
+    if (this.autoplay) {
+      setInterval(() => {
+        this.container.onmouseover = () => pause = true;
+        this.container.onmouseout = () => pause = false;
+        if (!pause) {
+          this.nextSlide();
+        }
+      }, 5000);
+    }
   }
 }
 
@@ -331,7 +352,8 @@ window.addEventListener("DOMContentLoaded", () => {
     prev: ".modules__info-btns .slick-prev",
     next: ".modules__info-btns .slick-next",
     activeClass: "card-active",
-    animate: true
+    animate: true,
+    autoplay: true
   });
   modulesSlider.init();
   const feedSlider = new _modules_slider_slider_mini__WEBPACK_IMPORTED_MODULE_1__["default"]({
