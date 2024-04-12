@@ -14,13 +14,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 class difference {
   constructor(oldOfficer, newOfficer, items) {
-    this.oldOfficer = document.querySelector(oldOfficer);
-    this.newOfficer = document.querySelector(newOfficer);
-    this.oldItems = this.oldOfficer.querySelectorAll(items);
-    this.newItems = this.newOfficer.querySelectorAll(items);
-    this.items = items;
-    this.oldCounter = 0;
-    this.newCounter = 0;
+    try {
+      this.oldOfficer = document.querySelector(oldOfficer);
+      this.newOfficer = document.querySelector(newOfficer);
+      this.oldItems = this.oldOfficer.querySelectorAll(items);
+      this.newItems = this.newOfficer.querySelectorAll(items);
+      this.items = items;
+      this.oldCounter = 0;
+      this.newCounter = 0;
+    } catch (error) {}
   }
   bindTriggers(container, items, counter) {
     container.querySelector(".plus").addEventListener("click", () => {
@@ -43,10 +45,12 @@ class difference {
     });
   }
   init() {
-    this.hideItems(this.oldItems);
-    this.hideItems(this.newItems);
-    this.bindTriggers(this.oldOfficer, this.oldItems, this.oldCounter);
-    this.bindTriggers(this.newOfficer, this.newItems, this.newCounter);
+    try {
+      this.hideItems(this.oldItems);
+      this.hideItems(this.newItems);
+      this.bindTriggers(this.oldOfficer, this.oldItems, this.oldCounter);
+      this.bindTriggers(this.newOfficer, this.newItems, this.newCounter);
+    } catch (error) {}
   }
 }
 
@@ -78,6 +82,63 @@ class Form {
       input.value = "";
     });
   }
+  checkMailInputs() {
+    const mailInputs = document.querySelectorAll('[type="email"]');
+    mailInputs.forEach(input => {
+      input.addEventListener("keypress", function (e) {
+        /**check for only cyrillic letters in any register and numbers */
+        if (e.key.match(/[^a-z 0-9 @ \.]/gi)) {
+          e.preventDefault();
+        }
+      });
+    });
+  }
+  initMask() {
+    let setCursorPosition = (pos, elem) => {
+      /**встановлюємо фокус */
+      // elem.focus();
+
+      if (elem.setSelectionRange) {
+        /**встановлюємо курсор */
+        /**.setSelectionRange - встановлює рамки виділення тексту,
+         * якщо дві координати збігаються- замість виділення там буду встановлен курсор
+         */
+        elem.setSelectionRange(pos, pos);
+      } else if (elem.createTextRange) {
+        let range = elem.createTextRange();
+        range.collapse(true);
+        range.moveEnd("character", pos);
+        range.moveStart("character", pos);
+        range.select();
+      }
+    };
+    function createMask(event) {
+      // console.log(event);
+      let matrix = "+1 (___) ___-____",
+        i = 0,
+        def = matrix.replace(/\D/g, ""),
+        val = this.value.replace(/\D/g, "");
+      if (def.length >= val.length) {
+        val = def;
+      }
+      this.value = matrix.replace(/./g, function (a) {
+        return /[_\d]/.test(a) && i < val.length ? val.charAt(i++) : i >= val.length ? "" : a;
+      });
+      if (event.type === "blur") {
+        if (this.value.length == 2) {
+          this.value = "";
+        }
+      } else {
+        setCursorPosition(this.value.length, this);
+      }
+    }
+    let inputs = document.querySelectorAll('[name="phone"]');
+    inputs.forEach(input => {
+      input.addEventListener("input", createMask);
+      input.addEventListener("focus", createMask);
+      input.addEventListener("blur", createMask);
+    });
+  }
   async postData(url, data) {
     let res = await fetch(url, {
       method: "POST",
@@ -86,6 +147,8 @@ class Form {
     return await res.text();
   }
   init() {
+    this.initMask();
+    this.checkMailInputs();
     this.forms.forEach(item => {
       item.addEventListener("submit", e => {
         e.preventDefault();
@@ -103,6 +166,11 @@ class Form {
           statusMessage.textContent = this.message.success;
         }).catch(() => {
           statusMessage.textContent = this.message.failure;
+        }).finally(() => {
+          this.clearInputs();
+          setTimeout(() => {
+            statusMessage.remove();
+          }, 6000);
         });
       });
     });
@@ -219,21 +287,23 @@ class MainSlider extends _slider__WEBPACK_IMPORTED_MODULE_0__["default"] {
   // <{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>
   render() {
     try {
-      this.hanson = document.querySelector(".hanson");
+      try {
+        this.hanson = document.querySelector(".hanson");
+      } catch (error) {}
+      this.btns.forEach(item => {
+        item.addEventListener("click", () => {
+          this.plusSlides(1);
+        });
+        /** when click logo -> open first page */
+        item.parentNode.previousElementSibling.addEventListener("click", e => {
+          e.preventDefault();
+          this.slideIndex = 1;
+          this.showSlides(this.slideIndex);
+        });
+      });
+      // <{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>
+      this.showSlides(this.slideIndex);
     } catch (error) {}
-    this.btns.forEach(item => {
-      item.addEventListener("click", () => {
-        this.plusSlides(1);
-      });
-      /** when click logo -> open first page */
-      item.parentNode.previousElementSibling.addEventListener("click", e => {
-        e.preventDefault();
-        this.slideIndex = 1;
-        this.showSlides(this.slideIndex);
-      });
-    });
-    // <{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>
-    this.showSlides(this.slideIndex);
   }
 }
 
@@ -316,24 +386,26 @@ class SliderMini extends _slider__WEBPACK_IMPORTED_MODULE_0__["default"] {
     });
   }
   init() {
-    let pause = false;
-    this.container.style.cssText = `
+    try {
+      let pause = false;
+      this.container.style.cssText = `
     display: flex;
     flex-wrap: wrap;
     overflow: hidden;
     align-items: flex-start;
     `;
-    this.bindTriggers();
-    this.decorizeSlides();
-    if (this.autoplay) {
-      setInterval(() => {
-        this.container.onmouseover = () => pause = true;
-        this.container.onmouseout = () => pause = false;
-        if (!pause) {
-          this.nextSlide();
-        }
-      }, 5000);
-    }
+      this.bindTriggers();
+      this.decorizeSlides();
+      if (this.autoplay) {
+        setInterval(() => {
+          this.container.onmouseover = () => pause = true;
+          this.container.onmouseout = () => pause = false;
+          if (!pause) {
+            this.nextSlide();
+          }
+        }, 5000);
+      }
+    } catch (error) {}
   }
 }
 
@@ -360,7 +432,9 @@ class Slider {
     autoplay
   } = {}) {
     this.container = document.querySelector(container);
-    this.slides = this.container.children;
+    try {
+      this.slides = this.container.children;
+    } catch (error) {}
     this.btns = document.querySelectorAll(btns);
     this.prev = document.querySelector(prev);
     this.next = document.querySelector(next);

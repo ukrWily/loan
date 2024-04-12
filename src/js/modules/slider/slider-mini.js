@@ -75,26 +75,28 @@ export default class SliderMini extends Slider {
   }
 
   init() {
-    let pause = false;
+    try {
+      let pause = false;
 
-    this.container.style.cssText = `
+      this.container.style.cssText = `
     display: flex;
     flex-wrap: wrap;
     overflow: hidden;
     align-items: flex-start;
     `;
 
-    this.bindTriggers();
-    this.decorizeSlides();
+      this.bindTriggers();
+      this.decorizeSlides();
 
-    if (this.autoplay) {
-      setInterval(() => {
-        this.container.onmouseover = () => (pause = true);
-        this.container.onmouseout = () => (pause = false);
-        if (!pause) {
-          this.nextSlide();
-        }
-      }, 5000);
-    }
+      if (this.autoplay) {
+        setInterval(() => {
+          this.container.onmouseover = () => (pause = true);
+          this.container.onmouseout = () => (pause = false);
+          if (!pause) {
+            this.nextSlide();
+          }
+        }, 5000);
+      }
+    } catch (error) {}
   }
 }
