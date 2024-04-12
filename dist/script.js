@@ -65,12 +65,18 @@ __webpack_require__.r(__webpack_exports__);
 class Form {
   constructor(forms) {
     this.forms = document.querySelectorAll(forms);
+    this.inputs = document.querySelectorAll("input");
     this.message = {
       loading: "Loading...",
       success: "Thank you! we'll call you soon.",
       failure: "Something going wrong... :("
     };
     this.path = "assets/question.php";
+  }
+  clearInputs() {
+    this.inputs.forEach(input => {
+      input.value = "";
+    });
   }
   async postData(url, data) {
     let res = await fetch(url, {
