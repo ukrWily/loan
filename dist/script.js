@@ -251,8 +251,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _slider__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./slider */ "./src/js/modules/slider/slider.js");
 
 class MainSlider extends _slider__WEBPACK_IMPORTED_MODULE_0__["default"] {
-  constructor(btns) {
-    super(btns);
+  constructor(btns, prevModule, nextModule) {
+    super(btns, prevModule, nextModule);
   }
 
   // <{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>
@@ -285,25 +285,44 @@ class MainSlider extends _slider__WEBPACK_IMPORTED_MODULE_0__["default"] {
     this.showSlides(this.slideIndex += n);
   }
   // <{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>
+
+  bindTriggers() {
+    this.btns.forEach(item => {
+      item.addEventListener("click", () => {
+        this.plusSlides(1);
+      });
+      /** when click logo -> open first page */
+      item.parentNode.previousElementSibling.addEventListener("click", e => {
+        e.preventDefault();
+        this.slideIndex = 1;
+        this.showSlides(this.slideIndex);
+      });
+    });
+    this.prevModule.forEach(item => {
+      item.addEventListener("click", e => {
+        e.stopPropagation();
+        e.preventDefault();
+        this.plusSlides(-1);
+      });
+    });
+    // this.nextModule.forEach((item) => {
+    //   item.addEventListener("click", (e) => {
+    //     e.stopPropagation();
+    //     e.preventDefault();
+    //     this.plusSlides(1);
+    //   });
+    // });
+  }
   render() {
-    try {
+    if (this.container) {
       try {
         this.hanson = document.querySelector(".hanson");
       } catch (error) {}
-      this.btns.forEach(item => {
-        item.addEventListener("click", () => {
-          this.plusSlides(1);
-        });
-        /** when click logo -> open first page */
-        item.parentNode.previousElementSibling.addEventListener("click", e => {
-          e.preventDefault();
-          this.slideIndex = 1;
-          this.showSlides(this.slideIndex);
-        });
-      });
+
       // <{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<{<>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>}>
       this.showSlides(this.slideIndex);
-    } catch (error) {}
+      this.bindTriggers();
+    }
   }
 }
 
@@ -427,11 +446,13 @@ class Slider {
     btns = null,
     next = null,
     prev = null,
+    prevModule = null,
     activeClass = "",
     animate,
     autoplay
   } = {}) {
     this.container = document.querySelector(container);
+    this.prevModule = document.querySelectorAll(prevModule);
     try {
       this.slides = this.container.children;
     } catch (error) {}
@@ -526,6 +547,12 @@ window.addEventListener("DOMContentLoaded", () => {
     btns: ".next"
   });
   slider.render();
+  const modulePageSlider = new _modules_slider_slider_main__WEBPACK_IMPORTED_MODULE_0__["default"]({
+    container: ".moduleapp",
+    btns: ".next",
+    prevModule: ".prevmodule"
+  });
+  modulePageSlider.render();
   const showUpSlider = new _modules_slider_slider_mini__WEBPACK_IMPORTED_MODULE_1__["default"]({
     container: ".showup__content-slider",
     prev: ".showup__prev",
