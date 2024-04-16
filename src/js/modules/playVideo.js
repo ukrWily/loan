@@ -8,6 +8,7 @@ export default class VideoPlayer {
   bindTriggers() {
     this.btns.forEach((btn) => {
       btn.addEventListener("click", () => {
+        this.activeBtn = btn;
         /**
          * if already created- just show, else- create
          */
@@ -32,8 +33,8 @@ export default class VideoPlayer {
   bindCloseBtn() {
     this.close.addEventListener("click", () => {
       this.overlay.style.display = "none";
-      this.player.stopVideo();
-      // this.player.destroy();
+      // this.player.stopVideo();
+      this.player.destroy();
     });
   }
 
