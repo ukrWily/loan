@@ -13,10 +13,17 @@ export default class VideoPlayer {
          */
         if (document.querySelector("ifarme#frame")) {
           this.overlay.style.display = "flex";
+          /**
+           * if choice another video- create new player
+           */
+          if (this.path !== btn.getAttribute("data-url")) {
+            this.path = btn.getAttribute("data-url");
+            this.player.loadVideoById({ videoId: this.path });
+          }
         } else {
-          const path = btn.getAttribute("data-url");
+          this.path = btn.getAttribute("data-url");
 
-          this.createPlayer(path);
+          this.createPlayer(this.path);
         }
       });
     });
@@ -35,20 +42,24 @@ export default class VideoPlayer {
       height: "100%",
       width: "100%",
       videoId: `${url}`,
+      events: {
+        onStateChange: this.onPlayerStateChange,
+      },
     });
 
-    console.log(this.player);
     this.overlay.style.display = "flex";
   }
 
   init() {
-    const tag = document.createElement("script");
+    if (this.btns.length > 0) {
+      const tag = document.createElement("script");
 
-    tag.src = "https://www.youtube.com/iframe_api";
-    const firstScriptTag = document.getElementsByTagName("script")[0];
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+      tag.src = "https://www.youtube.com/iframe_api";
+      const firstScriptTag = document.getElementsByTagName("script")[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-    this.bindTriggers();
-    this.bindCloseBtn();
+      this.bindTriggers();
+      this.bindCloseBtn();
+    }
   }
 }
