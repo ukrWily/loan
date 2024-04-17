@@ -51,6 +51,17 @@ export default class VideoPlayer {
     this.overlay.style.display = "flex";
   }
 
+  onPlayerStateChange(state) {
+    const blockedElem = this.activeBtn.closest(
+      ".module__video-item"
+    ).nextElementSibling;
+    const playBtn = this.activeBtn.querySelector("svg").cloneNode(true);
+
+    if (state.data === 0) {
+      blockedElem.querySelector(".play__circle").classList.remove("closed");
+    }
+  }
+
   init() {
     if (this.btns.length > 0) {
       const tag = document.createElement("script");
